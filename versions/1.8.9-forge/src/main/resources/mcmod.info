@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "autorattermixins",
+    "name": "AutoRatterMixins",
+    "description": "A collection of mixins for AutoRatter.",
+    "version": "${version}",
+    "mcversion": "${mcVersionStr}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Zephy (Nvidia2080Ti)"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

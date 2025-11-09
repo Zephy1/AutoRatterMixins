@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "org.zephy.autoratter.mixins",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"ChatHudMixin",
+		"DrawContextMixin",
+		"HandledScreenAccessor"
+	],
+	"client": [],
+	"server": [],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
