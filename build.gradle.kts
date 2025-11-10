@@ -9,14 +9,19 @@ plugins {
 version = property("mod_version").toString()
 group = property("mod_group").toString()
 
+configurations.all {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-json-jvm")
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-core-jvm")
+}
+
 val embed by configurations.creating
 configurations.implementation.get().extendsFrom(embed)
 
 loom {
-	mixin {
-		useLegacyMixinAp.set(true)
-		defaultRefmapName.set("autoratter.mixins.refmap.json")
-	}
+    mixin {
+        useLegacyMixinAp.set(true)
+        defaultRefmapName.set("autoratter.mixins.refmap.json")
+    }
 
 	runConfigs {
 		named("client") {
@@ -27,40 +32,30 @@ loom {
 }
 
 repositories {
-	maven("https://files.minecraftforge.net/maven")
-	maven("https://repo.spongepowered.org/maven") {
-		name = "sponge"
-	}
+    gradlePluginPortal()
+    mavenCentral()
+    maven("https://maven.fabricmc.net")
+    maven("https://maven.architectury.dev")
+    maven("https://maven.minecraftforge.net")
+    maven("https://repo.essential.gg/repository/maven-public")
+    maven("https://repo.spongepowered.org/maven/")
+    maven("https://repo.legacyfabric.net/repository/legacyfabric/")
 }
 
 dependencies {
-    if (project.platform.mcVersion <= 12100) {
-//        modCompileOnly("gg.essential:essential-$platform:4167+g4594ad6e6")
+    if (project.platform.mcVersion == 10809) {
+        modCompileOnly("gg.essential:essential-$platform:4167+g4594ad6e6")
 //        embed("gg.essential:loader-launchwrapper:1.2.3")
-        if (project.platform.mcVersion == 10809) {
-            embed("org.spongepowered:mixin:0.7.11-SNAPSHOT")
-        }
-    } else {
+        compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
+    } else if (project.platform.mcVersion >= 12100) {
         when (project.platform.mcVersion) {
             12105 -> {
                 modCompileOnly("gg.essential:universalcraft-1.21.5-fabric:436")
                 modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.5")
             }
-            12106 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.6-fabric:436")
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.6")
-            }
-            12107 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.7-fabric:436")
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.129.0+1.21.7")
-            }
             12108 -> {
                 modCompileOnly("gg.essential:universalcraft-1.21.7-fabric:436")
                 modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.8")
-            }
-            12109 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.9-fabric:436")
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.134.0+1.21.9")
             }
             12110 -> {
                 modCompileOnly("gg.essential:universalcraft-1.21.9-fabric:436")
@@ -76,68 +71,46 @@ dependencies {
         modImplementation("net.fabricmc:fabric-loader:0.17.3")
         modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
     }
-
-//	if (project.platform.mcVersion == 12105) {
-//		minecraft("com.mojang:minecraft:${project.extra["minecraft_version"]}")
-//		mappings("net.fabricmc:yarn:${project.extra["yarn_mappings"]}:v2")
-//		modImplementation("net.fabricmc:fabric-loader:${project.extra["loader_version"]}")
-//		modImplementation("net.fabricmc.fabric-api:fabric-api:${project.extra["fabric_version"]}")
-//		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-//
-//		modImplementation("gg.essential:universalcraft-1.21.5-fabric:${project.extra["universalcraft_version"]}") {
-//			exclude(group = "gg.essential", module = "universalcraft")
-//		}
-//		modImplementation("gg.essential:elementa:${project.extra["elementa_version"]}")
-//	}
-//
-//	if (project.platform.mcVersion == 10809) {
-//		embed("org.spongepowered:mixin:0.7.11-SNAPSHOT")
-//	}
 }
 
 tasks.processResources {
-	inputs.property("version", project.version)
+    inputs.property("version", project.version)
+    inputs.property("minecraft_version", project.platform.mcVersionStr)
+    filteringCharset = "UTF-8"
 
-	if (project.platform.mcVersion >= 12100) {
-		inputs.property("minecraft_version", project.platform.mcVersionStr)
-		filteringCharset = "UTF-8"
-
-		filesMatching("fabric.mod.json") {
-			expand(
-				"version" to project.version,
-				"minecraft_version" to project.platform.mcVersionStr,
-			)
-		}
-	}
+    filesMatching("fabric.mod.json") {
+        expand(
+            "version" to project.version,
+            "minecraft_version" to project.platform.mcVersionStr,
+        )
+    }
 }
 
 tasks.named<Jar>("jar") {
-	if (project.platform.mcVersion < 12100) {
-		from(sourceSets.main.get().output)
+    if (project.platform.mcVersion < 12100) {
+        from(sourceSets.main.get().output)
 
-		manifest {
-			attributes(
-				"FMLCorePlugin" to "org.zephy.autoratter.ColorMixinLoader",
-				"TweakClass" to "org.spongepowered.asm.launch.MixinTweaker",
-				"FMLAT" to "autorattermixins_at.cfg",
-				"MixinConfigs" to "autoratter.legacy.mixins.json"
-			)
-		}
-	}
-
-    val embedConfig = configurations.getByName("embed")
-    from(embedConfig.map {
-        if (it.isDirectory) it else zipTree(it).matching {
-            exclude("META-INF/*.SF", "META-INF/*.RSA", "META-INF/*.DSA")
+        manifest {
+            attributes(
+                "FMLCorePlugin" to "org.zephy.autoratter.ColorMixinLoader",
+                "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
+                "FMLAT" to "autorattermixins_at.cfg",
+                "MixinConfigs" to "autoratter.legacy.mixins.json"
+            )
         }
-    })
+
+        exclude(
+            "autoratter.modern.mixins.json",
+        )
+    }
 
     exclude(
         "META-INF/maven/**",
         "META-INF/*.SF",
         "META-INF/*.RSA",
         "META-INF/*.DSA",
-        "**/*.java"
+        "**/*.java",
+        "org/spongepowered/**"
     )
 }
 
@@ -158,7 +131,6 @@ tasks.register<Copy>("collectJars") {
 
         rename { fileName ->
             fileName
-                .replace(".jar", ".unloaded")
                 .replace("-forge", "")
                 .replace("-fabric", "")
                 .replace(" ", "-")

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(FontRenderer.class)
+@Mixin(value = FontRenderer.class, priority = 1111)
 public abstract class ColoredHexCodesMixin {
     @Shadow(remap = false)
     protected abstract void setColor(float r, float g, float b, float a2);
@@ -19,10 +19,14 @@ public abstract class ColoredHexCodesMixin {
     private int textColor;
     @Shadow
     private float alpha;
+
     @Unique
     private int autoratter$colorSR;
     @Unique
     private int autoratter$colorState;
+
+    @Unique
+    private static boolean autoratter$isSpecial = false;
 
     @Inject(
         method = "renderStringAtPos",
@@ -32,9 +36,6 @@ public abstract class ColoredHexCodesMixin {
         autoratter$colorSR = 0;
         autoratter$colorState = -1;
     }
-
-    @Unique
-    private static boolean autoratter$isSpecial = false;
 
     @Inject(
         method = "isFormatSpecial",
