@@ -1,5 +1,6 @@
 package org.zephy.autoratter.mixins;
 
+//#if MC>=12100
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -12,3 +13,4 @@ public interface HandledScreenAccessor {
     @Accessor("y")
     int getY();
 }
+//#endif

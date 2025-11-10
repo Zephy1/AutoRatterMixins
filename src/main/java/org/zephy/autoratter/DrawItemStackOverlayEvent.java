@@ -1,5 +1,6 @@
 package org.zephy.autoratter;
 
+//#if MC>=12100
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.font.TextRenderer;
@@ -34,3 +35,4 @@ public final class DrawItemStackOverlayEvent {
         void onDrawItemStackOverlay(DrawContext context, TextRenderer textRenderer, ItemStack stack, int x, int y, int z);
     }
 }
+//#endif

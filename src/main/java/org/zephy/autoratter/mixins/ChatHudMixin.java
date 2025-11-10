@@ -1,5 +1,6 @@
 package org.zephy.autoratter.mixins;
 
+//#if MC>=12100
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.gui.hud.ChatHud;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,3 +22,4 @@ public class ChatHudMixin {
         return 65535;
     }
 }
+//#endif

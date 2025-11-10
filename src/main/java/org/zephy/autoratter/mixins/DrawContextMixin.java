@@ -1,21 +1,21 @@
 package org.zephy.autoratter.mixins;
 
+//#if MC>=12100
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
 import org.zephy.autoratter.DrawItemStackOverlayEvent;
 
 @Mixin(DrawContext.class)
@@ -52,10 +52,11 @@ abstract class DrawContextMixin {
 				}
 			}
 
-			DrawItemStackOverlayEvent
-                    .DRAW_ITEM_STACK
-                    .invoker()
-					.onDrawItemStackOverlay((DrawContext)(Object)this, textRenderer, stack, x, y, z);
+            DrawItemStackOverlayEvent
+                .DRAW_ITEM_STACK
+                .invoker()
+                .onDrawItemStackOverlay((DrawContext)(Object)this, textRenderer, stack, x, y, z);
 		}
 	}
 }
+//#endif
