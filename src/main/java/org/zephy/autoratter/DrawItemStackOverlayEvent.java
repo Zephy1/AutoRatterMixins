@@ -23,16 +23,16 @@ public final class DrawItemStackOverlayEvent {
     }
 
     public static final Event<Draw> DRAW_ITEM_STACK = EventFactory.createArrayBacked(Draw.class,
-        listeners -> (drawContext, textRenderer, itemStack, x, y, z) -> {
+        listeners -> (drawContext, itemStack, x, y, z) -> {
             for (Draw listener : listeners) {
-                listener.onDrawItemStackOverlay(drawContext, textRenderer, itemStack, x, y, z);
+                listener.onDrawItemStackOverlay(drawContext, itemStack, x, y, z);
             }
         }
     );
 
     @FunctionalInterface
     public interface Draw {
-        void onDrawItemStackOverlay(DrawContext context, TextRenderer textRenderer, ItemStack stack, int x, int y, int z);
+        void onDrawItemStackOverlay(DrawContext context, ItemStack stack, int x, int y, int z);
     }
 }
 //#endif
