@@ -3,9 +3,7 @@
   "refmap": "autoratter.mixins.refmap.json",
   "minVersion": "0.7",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-
-  ],
+  "mixins": [],
   "client": [
     "ColoredHexCodesMixin",
     "DisablePatcherFontRendererMixin"

@@ -8,31 +8,35 @@ import org.spongepowered.asm.mixin.Mixins;
 import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.8.9")
-public class ColorMixinLoader implements IFMLLoadingPlugin
-{
+public class ColorMixinLoader implements IFMLLoadingPlugin {
     public ColorMixinLoader() {
-        System.out.println("ColorMixinLoader initializing...");
+        System.out.println("[AutoRatterMixins] ColorMixinLoader initializing...");
         MixinBootstrap.init();
         Mixins.addConfiguration("autoratter.legacy.mixins.json");
         MixinEnvironment.getCurrentEnvironment().setSide(MixinEnvironment.Side.CLIENT);
-        System.out.println("ColorMixinLoader initialized!");
+        System.out.println("[AutoRatterMixins] ColorMixinLoader initialized!");
     }
 
     @Override
-    public String[] getASMTransformerClass() { return new String[0]; }
+    public String[] getASMTransformerClass() {
+        return new String[0];
+    }
 
     @Override
-    public String getModContainerClass() { return null; }
+    public String getModContainerClass() {
+        return null;
+    }
 
     @Override
-    public String getSetupClass() { return null; }
+    public String getSetupClass() {
+        return null;
+    }
 
     @Override
     public void injectData(Map data) { }
 
     @Override
-    public String getAccessTransformerClass()
-    {
+    public String getAccessTransformerClass() {
         return null;
     }
 }
