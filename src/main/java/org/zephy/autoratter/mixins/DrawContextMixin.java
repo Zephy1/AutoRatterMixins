@@ -13,8 +13,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zephy.autoratter.DrawBatchedItemStackListEvent;
 import org.zephy.autoratter.ItemRenderData;
 
+//#if MC<=12105
+//$$import org.joml.Matrix4f;
+//$$import org.joml.Vector3f;
+//$$import net.minecraft.client.util.math.MatrixStack;
+//$$import org.spongepowered.asm.mixin.Final;
+//$$import org.spongepowered.asm.mixin.Shadow;
+//#endif
+
 @Mixin(DrawContext.class)
 abstract class DrawContextMixin {
+    //#if MC<=12105
+    //$$@Shadow
+    //$$@Final
+    //$$private MatrixStack matrices;
+    //#endif
+
     @Inject(
         //#if MC<=12105
         //$$method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V",
@@ -36,26 +50,24 @@ abstract class DrawContextMixin {
         CallbackInfo callback
     ) {
         if (stack.isEmpty()) return;
-//        DrawItemStackOverlayEvent
-//            .DRAW_ITEM_STACK
-//            .invoker()
-//            .onDrawItemStackOverlay(
-//                (DrawContext)(Object)this,
-//                stack,
-//                x,
-//                y,
-//                //#if MC<=12105
-//                //$$z
-//                //#else
-//                0
-//                //#endif
-//            );
+
+        //#if MC<=12105
+        //$$Matrix4f matrices = this.matrices.peek().getPositionMatrix();
+        //$$Vector3f transformedPos = new Vector3f(x, y, 0);
+        //$$matrices.transformPosition(transformedPos);
+        //$$int screenX = Math.round(transformedPos.x);
+        //$$int screenY = Math.round(transformedPos.y);
+        //#else
+        int screenX = x;
+        int screenY = y;
+        //#endif
+
         DrawBatchedItemStackListEvent.addItemRenderData(
             new ItemRenderData(
                 (DrawContext)(Object)this,
                 stack,
-                x,
-                y,
+                screenX,
+                screenY,
                 //#if MC<=12105
                 //$$z
                 //#else

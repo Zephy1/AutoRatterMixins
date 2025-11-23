@@ -13,14 +13,36 @@ import org.zephy.autoratter.DrawBatchedItemStackListEvent;
 abstract class GameRendererMixin {
     @Inject(
         method = "render",
-        at = @At("RETURN")
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/DrawContext;draw()V",
+            ordinal = 0,
+            shift = At.Shift.BEFORE
+        )
     )
-    public void finishDrawingFrame(
+    public void flushHudItems(
         RenderTickCounter tickCounter,
         boolean tick,
         CallbackInfo callback
     ) {
-        DrawBatchedItemStackListEvent.finishFrame();
+        DrawBatchedItemStackListEvent.finishFrame(0);
+    }
+
+    @Inject(
+        method = "render",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/DrawContext;draw()V",
+            ordinal = 1,
+            shift = At.Shift.BEFORE
+        )
+    )
+    public void flushScreenItems(
+        RenderTickCounter tickCounter,
+        boolean tick,
+        CallbackInfo callback
+    ) {
+        DrawBatchedItemStackListEvent.finishFrame(1);
     }
 }
 //#endif

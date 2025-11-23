@@ -22,9 +22,9 @@ public class DrawBatchedItemStackListEvent {
     }
 
     public static final Event<DrawBatchedItemStackListEvent.Draw> DRAW_ITEM_RENDER_DATA_LIST = EventFactory.createArrayBacked(DrawBatchedItemStackListEvent.Draw.class,
-        listeners -> (itemRenderDataList) -> {
+        listeners -> (itemRenderDataList, zOffset) -> {
             for (DrawBatchedItemStackListEvent.Draw listener : listeners) {
-                listener.onDrawBatchedItems(itemRenderDataList);
+                listener.onDrawBatchedItems(itemRenderDataList, zOffset);
             }
         }
     );
@@ -32,15 +32,18 @@ public class DrawBatchedItemStackListEvent {
     public static void addItemRenderData(ItemRenderData itemRenderData) {
         batchedItemRenderDataList.add(itemRenderData);
     }
-    public static void finishFrame() {
+    public static void finishFrame(int screenType) {
         if (batchedItemRenderDataList.isEmpty()) return;
-        DRAW_ITEM_RENDER_DATA_LIST.invoker().onDrawBatchedItems(batchedItemRenderDataList);
+
+        int zOffset = screenType == 0 ? 510 : 0;
+
+        DRAW_ITEM_RENDER_DATA_LIST.invoker().onDrawBatchedItems(batchedItemRenderDataList, zOffset);
         batchedItemRenderDataList.clear();
     }
 
     @FunctionalInterface
     public interface Draw {
-        void onDrawBatchedItems(List<ItemRenderData> itemRenderDataList);
+        void onDrawBatchedItems(List<ItemRenderData> itemRenderDataList, int zOffset);
     }
 }
 //#endif
