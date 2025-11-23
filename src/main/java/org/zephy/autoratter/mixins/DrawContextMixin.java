@@ -10,7 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zephy.autoratter.DrawItemStackOverlayEvent;
+import org.zephy.autoratter.DrawBatchedItemStackListEvent;
+import org.zephy.autoratter.ItemRenderData;
 
 @Mixin(DrawContext.class)
 abstract class DrawContextMixin {
@@ -35,10 +36,22 @@ abstract class DrawContextMixin {
         CallbackInfo callback
     ) {
         if (stack.isEmpty()) return;
-        DrawItemStackOverlayEvent
-            .DRAW_ITEM_STACK
-            .invoker()
-            .onDrawItemStackOverlay(
+//        DrawItemStackOverlayEvent
+//            .DRAW_ITEM_STACK
+//            .invoker()
+//            .onDrawItemStackOverlay(
+//                (DrawContext)(Object)this,
+//                stack,
+//                x,
+//                y,
+//                //#if MC<=12105
+//                //$$z
+//                //#else
+//                0
+//                //#endif
+//            );
+        DrawBatchedItemStackListEvent.addItemRenderData(
+            new ItemRenderData(
                 (DrawContext)(Object)this,
                 stack,
                 x,
@@ -48,7 +61,8 @@ abstract class DrawContextMixin {
                 //#else
                 0
                 //#endif
-            );
+            )
+        );
     }
 }
 //#endif
