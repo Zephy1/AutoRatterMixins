@@ -15,8 +15,12 @@ abstract class GameRendererMixin {
         method = "render",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/DrawContext;draw()V",
-            ordinal = 0,
+            //#if MC<=12105
+            //$$target = "Lnet/minecraft/client/gui/DrawContext;draw()V",
+            //$$ordinal = 0,
+            //#else
+            target = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
+            //#endif
             shift = At.Shift.BEFORE
         )
     )
@@ -32,8 +36,12 @@ abstract class GameRendererMixin {
         method = "render",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/DrawContext;draw()V",
-            ordinal = 1,
+            //#if MC<=12105
+            //$$target = "Lnet/minecraft/client/gui/DrawContext;draw()V",
+            //$$ordinal = 1,
+            //#else
+            target = "Lnet/minecraft/client/gui/render/GuiRenderer;render(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V",
+            //#endif
             shift = At.Shift.BEFORE
         )
     )
