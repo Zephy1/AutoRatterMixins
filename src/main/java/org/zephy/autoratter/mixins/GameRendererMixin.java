@@ -20,7 +20,7 @@ abstract class GameRendererMixin {
             shift = At.Shift.BEFORE
         )
     )
-    public void flushHudItems(
+    private void flushHudItems(
         RenderTickCounter tickCounter,
         boolean tick,
         CallbackInfo callback
@@ -37,7 +37,7 @@ abstract class GameRendererMixin {
             shift = At.Shift.BEFORE
         )
     )
-    public void flushScreenItems(
+    private void flushScreenItems(
         RenderTickCounter tickCounter,
         boolean tick,
         CallbackInfo callback
