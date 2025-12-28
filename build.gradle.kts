@@ -50,25 +50,22 @@ dependencies {
     } else if (project.platform.mcVersion >= 12100) {
         when (project.platform.mcVersion) {
             12105 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.5-fabric:436")
                 modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.5")
             }
             12108 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.7-fabric:436")
                 modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.8")
             }
             12110 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.9-fabric:436")
                 modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.10")
             }
             12111 -> {
-                modCompileOnly("gg.essential:universalcraft-1.21.11-fabric:438+feature-1.21.11-fabric")
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.139.1+1.21.11")
+                modImplementation("net.fabricmc.fabric-api:fabric-api:0.140.2+1.21.11") {
+                    exclude(group = "net.fabricmc.fabric-api", module = "fabric-content-registries-v0")
+                }
             }
             else -> throw IllegalStateException("Unsupported MC version: ${project.platform.mcVersion}")
         }
-        modCompileOnly("gg.essential:elementa:714")
-        modImplementation("net.fabricmc:fabric-loader:0.18.1")
+        modImplementation("net.fabricmc:fabric-loader:0.18.4")
         modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
     }
 }
