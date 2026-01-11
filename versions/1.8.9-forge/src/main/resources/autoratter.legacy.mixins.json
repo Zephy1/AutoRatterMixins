@@ -6,6 +6,7 @@
   "mixins": [],
   "client": [
     "ColoredHexCodesMixin",
-    "DisablePatcherFontRendererMixin"
+    "DisablePatcherFontRendererMixin",
+    "RenderItemMixin"
   ]
 }
