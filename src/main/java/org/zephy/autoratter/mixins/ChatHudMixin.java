@@ -2,16 +2,16 @@ package org.zephy.autoratter.mixins;
 
 //#if MC>=12100
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.gui.components.ChatComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ChatHud.class)
+@Mixin(ChatComponent.class)
 public class ChatHudMixin {
     @ModifyExpressionValue(
         method = {
-            "addMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V",
-            "addVisibleMessage"
+            "addMessageToQueue(Lnet/minecraft/client/GuiMessage;)V",
+            "addMessageToDisplayQueue"
         },
         at = @At(
             value = "CONSTANT",
