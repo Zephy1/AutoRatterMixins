@@ -22,8 +22,10 @@ public abstract class AbstractContainerScreenMixin {
     private void drawSlotItemUnderlay(
         GuiGraphics drawContext,
         Slot slot,
+        //#if MC>=12111
         int i,
         int j,
+        //#endif
         CallbackInfo ci
     ) {
         ItemStack stack = slot.getItem();
