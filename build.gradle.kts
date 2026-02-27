@@ -126,11 +126,8 @@ tasks.register<Copy>("collectJars") {
             fileTreeElement.name.contains(" 1.1")
         }
 
-        rename { fileName ->
-            fileName
-                .replace("-forge", "")
-                .replace("-fabric", "")
-                .replace(" ", "-")
+        rename {
+            "AutoRatterMixins-v${project.version}+${project.platform.mcVersionStr}.jar"
         }
     }
     into(outputDir)
