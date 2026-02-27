@@ -127,7 +127,7 @@ tasks.register<Copy>("collectJars") {
         }
 
         rename {
-            "AutoRatterMixins-v${project.version}+${project.platform.mcVersionStr}.jar"
+            "AutoRatterMixins+${project.platform.mcVersionStr}.jar"
         }
     }
     into(outputDir)
