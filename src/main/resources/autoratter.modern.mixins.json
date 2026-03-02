@@ -5,14 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ChatHudMixin",
-    //#if MC<=12105
-    //$$"DrawContextMixin",
-    //#endif
-    //#if MC>=12106
-    "GuiMixin",
-    "AbstractContainerScreenMixin",
-    //#endif
-    "GameRendererMixin"
+    "DrawContextMixin"
   ],
   "client": [],
   "server": [],
