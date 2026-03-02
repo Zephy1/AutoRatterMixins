@@ -51,7 +51,6 @@ dependencies {
     }
     if (project.platform.mcVersion < 12100) return@dependencies
 
-    var meowddingLibVersion = ""
     when (project.platform.mcVersion) {
         12105 -> {
             modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.5")
