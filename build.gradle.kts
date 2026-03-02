@@ -47,27 +47,30 @@ dependencies {
         modCompileOnly("gg.essential:essential-$platform:4167+g4594ad6e6")
 //        embed("gg.essential:loader-launchwrapper:1.2.3")
         compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
-    } else if (project.platform.mcVersion >= 12100) {
-        when (project.platform.mcVersion) {
-            12105 -> {
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.5")
-            }
-            12108 -> {
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.8")
-            }
-            12110 -> {
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.10")
-            }
-            12111 -> {
-                modImplementation("net.fabricmc.fabric-api:fabric-api:0.140.2+1.21.11") {
-                    exclude(group = "net.fabricmc.fabric-api", module = "fabric-content-registries-v0")
-                }
-            }
-            else -> throw IllegalStateException("Unsupported MC version: ${project.platform.mcVersion}")
-        }
-        modImplementation("net.fabricmc:fabric-loader:0.18.4")
-        modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
+        return@dependencies
     }
+    if (project.platform.mcVersion < 12100) return@dependencies
+
+    var meowddingLibVersion = ""
+    when (project.platform.mcVersion) {
+        12105 -> {
+            modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.5")
+        }
+        12108 -> {
+            modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.8")
+        }
+        12110 -> {
+            modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.10")
+        }
+        12111 -> {
+            modImplementation("net.fabricmc.fabric-api:fabric-api:0.140.2+1.21.11") {
+                exclude(group = "net.fabricmc.fabric-api", module = "fabric-content-registries-v0")
+            }
+        }
+        else -> throw IllegalStateException("Unsupported MC version: ${project.platform.mcVersion}")
+    }
+    modImplementation("net.fabricmc:fabric-loader:0.18.4")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
 }
 
 tasks.processResources {
