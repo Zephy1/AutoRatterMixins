@@ -1,6 +1,5 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
         maven("https://maven.fabricmc.net")
         maven("https://maven.architectury.dev")
@@ -11,7 +10,7 @@ pluginManagement {
     }
 
     plugins {
-        id("com.github.johnrengelman.shadow") version "8.1.1"
+        id("com.gradleup.shadow") version "9.4.1"
     }
 }
 

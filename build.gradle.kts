@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
     id("maven-publish")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
     id("gg.essential.multi-version")
     id("gg.essential.defaults")
 }
@@ -15,24 +15,9 @@ configurations.all {
 }
 
 val embed by configurations.creating
-configurations.implementation.get().extendsFrom(embed)
-
-loom {
-    mixin {
-        useLegacyMixinAp.set(true)
-        defaultRefmapName.set("autoratter.mixins.refmap.json")
-    }
-
-	runConfigs {
-		named("client") {
-			ideConfigGenerated(true)
-			programArgs("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
-		}
-	}
-}
+configurations.getByName("implementation").extendsFrom(embed)
 
 repositories {
-    gradlePluginPortal()
     mavenCentral()
     maven("https://maven.fabricmc.net")
     maven("https://maven.architectury.dev")
@@ -49,39 +34,46 @@ dependencies {
         compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
         return@dependencies
     }
-    if (project.platform.mcVersion < 12100) return@dependencies
-
-    when (project.platform.mcVersion) {
-        12105 -> {
-            modImplementation("net.fabricmc.fabric-api:fabric-api:0.128.2+1.21.5")
-        }
-        12108 -> {
-            modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.8")
-        }
-        12110 -> {
-            modImplementation("net.fabricmc.fabric-api:fabric-api:0.136.0+1.21.10")
-        }
-        12111 -> {
-            modImplementation("net.fabricmc.fabric-api:fabric-api:0.140.2+1.21.11") {
-                exclude(group = "net.fabricmc.fabric-api", module = "fabric-content-registries-v0")
-            }
-        }
-        else -> throw IllegalStateException("Unsupported MC version: ${project.platform.mcVersion}")
-    }
-    modImplementation("net.fabricmc:fabric-loader:0.18.4")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
 }
 
-tasks.processResources {
-    inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.platform.mcVersionStr)
-    filteringCharset = "UTF-8"
+tasks {
+    if (project.platform.mcVersion < 12100) {
+        loom {
+            mixin {
+                useLegacyMixinAp.set(true)
+                defaultRefmapName.set("autoratter.mixins.refmap.json")
+            }
 
-    filesMatching("fabric.mod.json") {
-        expand(
-            "version" to project.version,
-            "minecraft_version" to project.platform.mcVersionStr,
-        )
+            runConfigs {
+                named("client") {
+                    ideConfigGenerated(true)
+                    programArgs("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
+                }
+            }
+        }
+    }
+
+    shadowJar {
+        configurations.set(listOf(embed))
+        exclude("gg/essential/**")
+    }
+    withType<net.fabricmc.loom.task.RemapJarTask>().configureEach {
+        dependsOn(shadowJar)
+        inputFile.set(shadowJar.flatMap { it.archiveFile })
+    }
+
+    processResources {
+        val version = project.version
+        val minecraftVersion = project.platform.mcVersionStr
+
+        inputs.property("version", version)
+        inputs.property("minecraft_version", minecraftVersion)
+        filesMatching("fabric.mod.json") {
+            expand(
+                "version" to project.version,
+                "minecraft_version" to minecraftVersion,
+            )
+        }
     }
 }
 
@@ -113,27 +105,37 @@ tasks.named<Jar>("jar") {
     )
 }
 
-tasks.register<Copy>("collectJars") {
-    group = "build"
-    description = "Copies this version’s non-shadowed JARs to main/jars"
+afterEvaluate {
+    val hasRemapJar = tasks.findByName("remapJar") != null
+    val outputTaskName = if (hasRemapJar) "remapJar" else "shadowJar"
 
-    val outputDir = projectDir.resolve("../../jars").normalize()
-    dependsOn("remapJar")
+    tasks.register<Copy>("collectJars") {
+        group = "build"
+        description = "Copies this version's non-shadowed JARs to main/jars"
 
-    from(tasks.named("remapJar")) {
-        include("*.jar")
-        exclude("*-all.jar")
+        val outputDir = projectDir.resolve("../../jars").normalize()
+        dependsOn(outputTaskName)
 
-        exclude { fileTreeElement ->
-            fileTreeElement.name.contains(" 1.1")
+        from(tasks.named(outputTaskName)) {
+            include("*.jar")
+            exclude { it.name.contains(" 1.2") && it.name.contains("-all") }
+            rename {
+                "${rootProject.name}-${version}+${project.platform.mcVersionStr}.jar"
+            }
         }
-
-        rename {
-            "AutoRatterMixins+${project.platform.mcVersionStr}.jar"
-        }
+        into(outputDir)
     }
-    into(outputDir)
-}
-tasks.named("build") {
-    finalizedBy("collectJars")
+
+    tasks.named("build") {
+        finalizedBy("collectJars")
+    }
+
+    configurations.named("default") {
+        isCanBeConsumed = true
+        isCanBeResolved = false
+    }
+
+    artifacts {
+        add("default", tasks.named(outputTaskName))
+    }
 }
