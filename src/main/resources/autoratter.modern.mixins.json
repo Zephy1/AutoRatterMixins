@@ -1,16 +1,16 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "org.zephy.autoratter.mixins",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "ChatHudMixin",
-    "DrawContextMixin",
-    "ClientTextTooltipAccessor"
-  ],
-  "client": [],
-  "server": [],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "minVersion": "0.8",
+    "package": "org.zephy.autoratter.mixins",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "ChatHudMixin",
+        "DrawContextMixin",
+        "ClientTextTooltipAccessor"
+    ],
+    "client": [],
+    "server": [],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }
