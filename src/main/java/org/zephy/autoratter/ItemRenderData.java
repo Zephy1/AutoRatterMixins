@@ -1,15 +1,31 @@
 package org.zephy.autoratter;
 
 //#if MC>=12100
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 
+//#if MC<=12111
+//$$import net.minecraft.client.gui.GuiGraphics;
+//#else
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+//#endif
+
 public class ItemRenderData {
-    public final GuiGraphics drawContext;
+    //#if MC<=12111
+    //$$public final GuiGraphics drawContext;
+    //#else
+    public final GuiGraphicsExtractor drawContext;
+    //#endif
     public final ItemStack itemStack;
     public final int x, y, z;
 
-    public ItemRenderData(GuiGraphics drawContext, ItemStack itemStack, int x, int y, int z) {
+    public ItemRenderData(
+        //#if MC<=12111
+        //$$GuiGraphics drawContext,
+        //#else
+        GuiGraphicsExtractor drawContext,
+        //#endif
+        ItemStack itemStack, int x, int y, int z
+    ) {
         this.drawContext = drawContext;
         this.itemStack = itemStack;
         this.x = x;

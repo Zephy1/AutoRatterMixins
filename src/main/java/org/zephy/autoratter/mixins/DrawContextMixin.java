@@ -2,7 +2,6 @@ package org.zephy.autoratter.mixins;
 
 //#if MC>=12100
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.resources.Identifier;
@@ -34,7 +33,13 @@ import java.util.regex.Pattern;
 //$$import org.spongepowered.asm.mixin.Shadow;
 //#endif
 
-@Mixin(GuiGraphics.class)
+//#if MC<=12111
+//$$import net.minecraft.client.gui.GuiGraphics;
+//$$@Mixin(GuiGraphics.class)
+//#else
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+@Mixin(GuiGraphicsExtractor.class)
+//#endif
 abstract class DrawContextMixin {
     //#if MC<=12105
     //$$@Shadow
@@ -54,8 +59,10 @@ abstract class DrawContextMixin {
     @Inject(
         //#if MC<=12105
         //$$method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V",
+        //#elseif MC<=12111
+        //$$method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V",
         //#else
-        method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V",
+        method = "item(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V",
         //#endif
         at = @At("HEAD")
     )
@@ -86,7 +93,11 @@ abstract class DrawContextMixin {
 
         DrawSingleItemStackEvent.drawSingleItemStack(
             new ItemRenderData(
-                (GuiGraphics)(Object)this,
+                //#if MC<=12111
+                //$$(GuiGraphics)(Object)this,
+                //#else
+                (GuiGraphicsExtractor)(Object)this,
+                //#endif
                 itemStack,
                 screenX,
                 screenY,
@@ -103,10 +114,18 @@ abstract class DrawContextMixin {
     private static final Pattern HEX_PATTERN = Pattern.compile("#([0-9a-fA-F]{6})");
 
     @Inject(
-        method = "renderTooltip",
+        //#if MC<=12111
+        //$$method = "renderTooltip",
+        //#else
+        method = "tooltip",
+        //#endif
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/TooltipRenderUtil;renderTooltipBackground(Lnet/minecraft/client/gui/GuiGraphics;IIIILnet/minecraft/resources/Identifier;)V",
+            //#if MC<=12111
+            //$$target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/TooltipRenderUtil;renderTooltipBackground(Lnet/minecraft/client/gui/GuiGraphics;IIIILnet/minecraft/resources/Identifier;)V",
+            //#else
+            target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/TooltipRenderUtil;extractTooltipBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIILnet/minecraft/resources/Identifier;)V",
+            //#endif
             shift = At.Shift.AFTER
         ),
         locals = LocalCapture.CAPTURE_FAILHARD

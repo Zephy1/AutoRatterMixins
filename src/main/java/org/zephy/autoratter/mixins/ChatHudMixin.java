@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ChatHudMixin {
     @ModifyExpressionValue(
         method = {
-            "addMessageToQueue(Lnet/minecraft/client/GuiMessage;)V",
+            "addMessageToQueue",
             "addMessageToDisplayQueue"
         },
         at = @At(
