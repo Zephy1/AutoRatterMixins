@@ -11,16 +11,25 @@ tasks {
     processResources {
         val version = project.version
         val minecraftVersion = project.platform.mcVersionStr
+        val javaVersion = project.java.toolchain.languageVersion.get().asInt()
+        val minFabricApiVersion = project.findProperty("min-fabric-api")?.toString()
 
         inputs.property("version", version)
         inputs.property("minecraft_version", minecraftVersion)
+        inputs.property("min_fabric_api_version", minFabricApiVersion.toString())
         filesMatching("fabric.mod.json") {
             expand(mapOf(
                 "version" to project.version,
                 "minecraft_version" to minecraftVersion,
+                "min_fabric_api_version" to minFabricApiVersion,
             ))
         }
 
+        inputs.property("javaVersion", javaVersion)
+        filesMatching("autoratter.mixins.json") {
+            filter { line ->
+                line.replace("JAVA_\$javaVersion", "JAVA_$javaVersion")
+            }
         }
     }
 }
