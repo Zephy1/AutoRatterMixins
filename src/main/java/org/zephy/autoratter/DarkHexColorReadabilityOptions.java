@@ -1,6 +1,5 @@
 package org.zephy.autoratter;
 
-//#if MC>=12100
 public class DarkHexColorReadabilityOptions {
     private static boolean isEnabled = true;
     private static int backgroundColorInt = 0x7FFFFFFF;
@@ -27,4 +26,3 @@ public class DarkHexColorReadabilityOptions {
         return luminanceThreshold;
     }
 }
-//#endif

@@ -1,6 +1,5 @@
 package org.zephy.autoratter.mixins;
 
-//#if MC>=12100
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -25,41 +24,24 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//#if MC<=12105
-//$$import org.joml.Matrix4f;
-//$$import org.joml.Vector3f;
-//$$import com.mojang.blaze3d.vertex.PoseStack;
-//$$import org.spongepowered.asm.mixin.Final;
-//$$import org.spongepowered.asm.mixin.Shadow;
-//#endif
-
 //#if MC<=12111
 //$$import net.minecraft.client.gui.GuiGraphics;
 //$$@Mixin(GuiGraphics.class)
 //#else
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+
 @Mixin(GuiGraphicsExtractor.class)
 //#endif
 abstract class DrawContextMixin {
-    //#if MC<=12105
-    //$$@Shadow
-    //$$@Final
-    //$$private PoseStack pose;
-    //#endif
-
-    //#if MC>=12105
     @Shadow
     public abstract void fill(int i, int j, int k, int l, int m);
     @Shadow
     public abstract int guiWidth();
     @Shadow
     public abstract int guiHeight();
-    //#endif
 
     @Inject(
-        //#if MC<=12105
-        //$$method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V",
-        //#elseif MC<=12111
+        //#if MC<=12111
         //$$method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V",
         //#else
         method = "item(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V",
@@ -73,24 +55,12 @@ abstract class DrawContextMixin {
         int x,
         int y,
         int seed,
-        //#if MC<=12105
-        //$$int z,
-        //#endif
         CallbackInfo callback
     ) {
         if (itemStack.isEmpty()) return;
 
-        //#if MC<=12105
-        //$$Matrix4f matrices = this.pose.last().pose();
-        //$$Vector3f transformedPos = new Vector3f(x, y, 0);
-        //$$matrices.transformPosition(transformedPos);
-        //$$int screenX = Math.round(transformedPos.x);
-        //$$int screenY = Math.round(transformedPos.y);
-        //#else
         int screenX = x;
         int screenY = y;
-        //#endif
-
         DrawSingleItemStackEvent.drawSingleItemStack(
             new ItemRenderData(
                 //#if MC<=12111
@@ -101,16 +71,11 @@ abstract class DrawContextMixin {
                 itemStack,
                 screenX,
                 screenY,
-                //#if MC<=12105
-                //$$z
-                //#else
                 0
-                //#endif
             )
         );
     }
 
-    //#if MC>=12105
     private static final Pattern HEX_PATTERN = Pattern.compile("#([0-9a-fA-F]{6})");
 
     @Inject(
@@ -202,6 +167,4 @@ abstract class DrawContextMixin {
         double luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0;
         return luminance < DarkHexColorReadabilityOptions.GetLuminanceThreshold();
     }
-    //#endif
 }
-//#endif

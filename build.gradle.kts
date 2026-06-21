@@ -27,31 +27,8 @@ repositories {
     maven("https://repo.legacyfabric.net/repository/legacyfabric/")
 }
 
-dependencies {
-    if (project.platform.mcVersion == 10809) {
-        modCompileOnly("gg.essential:essential-$platform:4167+g4594ad6e6")
-//        embed("gg.essential:loader-launchwrapper:1.2.3")
-        compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
-        return@dependencies
-    }
-}
 
 tasks {
-    if (project.platform.mcVersion < 12100) {
-        loom {
-            mixin {
-                useLegacyMixinAp.set(true)
-                defaultRefmapName.set("autoratter.mixins.refmap.json")
-            }
-
-            runConfigs {
-                named("client") {
-                    ideConfigGenerated(true)
-                    programArgs("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
-                }
-            }
-        }
-    }
 
     shadowJar {
         configurations.set(listOf(embed))
@@ -74,35 +51,9 @@ tasks {
                 "minecraft_version" to minecraftVersion,
             )
         }
-    }
-}
 
-tasks.named<Jar>("jar") {
-    if (project.platform.mcVersion < 12100) {
-        from(sourceSets.main.get().output)
-
-        manifest {
-            attributes(
-                "FMLCorePlugin" to "org.zephy.autoratter.ColorMixinLoader",
-                "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
-                "FMLAT" to "autorattermixins_at.cfg",
-                "MixinConfigs" to "autoratter.legacy.mixins.json"
-            )
         }
-
-        exclude(
-            "autoratter.modern.mixins.json",
-        )
     }
-
-    exclude(
-        "META-INF/maven/**",
-        "META-INF/*.SF",
-        "META-INF/*.RSA",
-        "META-INF/*.DSA",
-        "**/*.java",
-        "org/spongepowered/**"
-    )
 }
 
 afterEvaluate {

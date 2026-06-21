@@ -1,6 +1,5 @@
 package org.zephy.autoratter;
 
-//#if MC>=12100
 import net.minecraft.world.item.ItemStack;
 
 //#if MC<=12111
@@ -33,4 +32,3 @@ public class ItemRenderData {
         this.z = z;
     }
 }
-//#endif

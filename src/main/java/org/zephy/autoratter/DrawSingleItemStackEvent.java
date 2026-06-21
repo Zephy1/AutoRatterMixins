@@ -1,6 +1,5 @@
 package org.zephy.autoratter;
 
-//#if MC>=12100
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -36,4 +35,3 @@ public class DrawSingleItemStackEvent {
         void onDrawSingleItem(ItemRenderData itemRenderData);
     }
 }
-//#endif
