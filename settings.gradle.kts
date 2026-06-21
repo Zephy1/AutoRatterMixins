@@ -16,6 +16,7 @@ val versionList = listOf(
     "26.2-fabric",
     "26.1.2-fabric",
     "1.21.11-fabric",
+    "1.21.10-fabric",
 )
 versionList.forEach { version ->
     file("versions/$version").mkdirs()
