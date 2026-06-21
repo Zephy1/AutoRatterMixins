@@ -25,10 +25,9 @@ tasks {
             ))
         }
 
-        inputs.property("javaVersion", javaVersion)
-        filesMatching("autoratter.mixins.json") {
+        filesMatching("autoratter.modern.mixins.json") {
             filter { line ->
-                line.replace("JAVA_\$javaVersion", "JAVA_$javaVersion")
+                line.replace("JAVA_\$javaVersion", "JAVA_${javaVersion}")
             }
         }
     }
