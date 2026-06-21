@@ -47,7 +47,7 @@ afterEvaluate {
 
         from(tasks.named(outputTaskName)) {
             include("*.jar")
-            exclude { it.name.contains(" 1.1")}
+            exclude { it.name.contains(" 1.2") && it.name.contains("-all") }
             rename {
                 "${rootProject.name}+${project.platform.mcVersionStr}.jar"
             }
