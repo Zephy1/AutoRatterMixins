@@ -8,8 +8,6 @@
         "DrawContextMixin",
         "ClientTextTooltipAccessor"
     ],
-    "client": [],
-    "server": [],
     "injectors": {
         "defaultRequire": 1
     }

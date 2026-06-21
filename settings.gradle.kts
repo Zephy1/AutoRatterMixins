@@ -5,9 +5,6 @@ pluginManagement {
         maven("https://maven.architectury.dev")
         maven("https://maven.minecraftforge.net")
         maven("https://repo.essential.gg/repository/maven-public")
-
-    plugins {
-        id("com.gradleup.shadow") version "9.4.1"
     }
 }
 
